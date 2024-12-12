@@ -90,45 +90,13 @@ const STM8_ADDRESSS = 0x10
     /**
      * IR controller button
      */
-    export enum IRButtons {
-        //% blcok="Menu"
-        Menu = 2,
-        //% blcok="Up"
-        Up = 5,
-        //% blcok="Left"
-        Left = 8,
-        //% blcok="Right"
-        Right = 10,
-        //% blcok="Down"
-        Down = 13,
-        //% blcok="OK"
-        OK = 9,
-        //% blcok="Plus"
-        Plus = 4,
-        //% blcok="Minus"
-        Minus = 12,
-        //% blcok="Back"
-        Back = 6,
-        //% block="0"
-        Zero = 14,
-        //% block="1"
-        One = 16,
-        //% block="2"
-        Two = 17,
-        //% block="3"
-        Three = 18,
-        //% block="4"
-        Four = 20,
-        //% block="5"
-        Five = 21,
-        //% block="6"
-        Six = 22,
-        //% block="7"
-        Seven = 24,
-        //% block="8"
-        Eight = 25,
-        //% block="9"
-        Nine = 26
+    export enum IRButton {
+        //% blcok="Power"
+        power = 0,
+        //% block="Menu"
+        menu = 2,
+        //% block="+"
+        add = 4
     }
     /**
      * TODO: Set the speed of left and right wheels. 
@@ -472,22 +440,6 @@ const STM8_ADDRESSS = 0x10
             buf[3] = 0;			//补位
             pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
         }
-    }
-    //% shim=IRV2::irCode
-    function irCode(): number {
-        return 0;
-    }
-    //% weight=25
-    //% block="On IR button %button Pressed"
-    export function IR_callbackUser(button: IRButtons, handler: () => void) {
-        pins.setPull(DigitalPin.P16, PinPullMode.PullUp)
-        control.onEvent(98, button, handler)
-        control.inBackground(() => {
-            while (true) {
-                control.raiseEvent(98, irCode()&0x00ff, EventCreationMode.CreateAndFire)
-                basic.pause(20)
-            }
-        })
     }
     function initEvents(): void {
         if (_initEvents) {
