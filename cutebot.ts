@@ -3,39 +3,38 @@
  */
 //% weight=5 color=#0fbc11  icon="\uf207" 
 namespace cuteBot {
-    const STM8_ADDRESSS = 0x10
-    let IR_Val = 0
+const STM8_ADDRESSS = 0x10
     let _initEvents = true
-    /**
-    * Unit of Ultrasound Module
-    */
+	/**
+	* Unit of Ultrasound Module
+	*/
     export enum SonarUnit {
         //% block="cm"
         Centimeters,
         //% block="inches"
         Inches
     }
-    /**
-    * Select the motor on the left or right
-    */
+	/**
+	* Select the motor on the left or right
+	*/
     export enum MotorsList {
         //% blockId="M1" block="M1"
         M1 = 0,
         //% blockId="M2" block="M2"
         M2 = 1
     }
-    /**
-    * Select the servo on the S1 or S2
-    */
+	/**
+	* Select the servo on the S1 or S2
+	*/
     export enum ServoList {
         //% block="S1"
         S1 = 0,
         //% block="S2"
         S2 = 1
     }
-    /**
-    * Select the RGBLights on the left or right
-    */
+	/**
+	* Select the RGBLights on the left or right
+	*/
     export enum RGBLights {
         //% blockId="Right_RGB" block="Right_RGB"
         RGB_L = 1,
@@ -44,9 +43,9 @@ namespace cuteBot {
         //% blockId="ALL" block="ALL"
         ALL = 3
     }
-    /**
-    * Status List of Tracking Modules
-    */
+	/**
+	* Status List of Tracking Modules
+	*/
     export enum TrackingState {
         //% block="● ●" enumval=0
         L_R_line,
@@ -133,8 +132,8 @@ namespace cuteBot {
     }
     /**
      * TODO: Set the speed of left and right wheels. 
-     * @param lspeed Left wheel speed 
-     * @param rspeed Right wheel speed
+     * @param lspeed Left wheel speed , eg: 100
+     * @param rspeed Right wheel speed, eg: -100
      */
     //% blockId=MotorRun block="Set left wheel speed %lspeed\\% |right wheel speed %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
@@ -184,9 +183,9 @@ namespace cuteBot {
     }
     /**
     * TODO: Full speed operation lasts for 10 seconds,speed is 100.
-    * @param dir Driving direction
-    * @param speed Running speed
-    * @param time Travel time
+    * @param dir Driving direction, eg: Direction.forward
+    * @param speed Running speed, eg: 50
+    * @param time Travel time, eg: 5
     */
     //% blockId=cutebot_move_time block="Go %dir at speed%speed\\% for %time seconds"
     //% weight=95
@@ -247,7 +246,7 @@ namespace cuteBot {
         pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
 
     }
-    /**
+	/**
     * TODO: full speed turnleft.
     */
     //% blockId=cutebot_left block="Turn left at full speed"
@@ -264,7 +263,7 @@ namespace cuteBot {
         buf[2] = 0;
         pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
     }
-    /**
+	/**
     * TODO: full speed turnright.
     */
     //% blockId=cutebot_right block="Turn right at full speed"
@@ -281,10 +280,10 @@ namespace cuteBot {
         buf[2] = 0;
         pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
     }
-    /**
+	/**
     * TODO: stopcar
     */
-    //% blockId=cutebot_stopcar block="Stop car immediately"
+    //% blockId=cutebot_stopcar block="Stop car immediatly"
     //% weight=70
     export function stopcar(): void {
         motors(0, 0)
@@ -302,12 +301,12 @@ namespace cuteBot {
         b = color & 0xFF
         singleheadlights(light, r, g, b)
     }
-    /**
-    * TODO: Select a headlights and set the RGB color.
-    * @param R R color value of RGB color
-    * @param G G color value of RGB color
-    * @param B B color value of RGB color
-    */
+	/**
+	* TODO: Select a headlights and set the RGB color.
+	* @param R R color value of RGB color, eg: 0
+	* @param G G color value of RGB color, eg: 128
+	* @param B B color value of RGB color, eg: 255
+	*/
     //% inlineInputMode=inline
     //% blockId=RGB block="Set LED headlights %light color R:%r G:%g B:%b"
     //% r.min=0 r.max=255
@@ -319,7 +318,7 @@ namespace cuteBot {
         if (light == 3) {
             buf[0] = 0x04;
             buf[1] = r;
-            buf[2] = g * 0.38;
+            buf[2] = g;
             buf[3] = b;
             pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
             buf[0] = 0x08;
@@ -357,8 +356,8 @@ namespace cuteBot {
     }
 
     /**
-    * Judging the Current Status of Tracking Module. 
-    * @param state Four states of tracking module
+	* Judging the Current Status of Tracking Module. 
+	* @param state Four states of tracking module, eg: TrackingState.L_R_line
     */
     //% blockId=ringbitcar_tracking block="Tracking state is %state"
     //% weight=50
@@ -385,8 +384,8 @@ namespace cuteBot {
     }
     /**
     * TODO: track one side
-    * @param side Line sensor edge 
-    * @param state Line sensor status
+    * @param side Line sensor edge , eg: MbPins.Left
+    * @param state Line sensor status, eg: MbEvents.FindLine
     */
     //% block="%side line sensor %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
@@ -397,16 +396,16 @@ namespace cuteBot {
         pins.setPull(DigitalPin.P14, PinPullMode.PullNone)
         let left_tracking = pins.digitalReadPin(DigitalPin.P13);
         let right_tracking = pins.digitalReadPin(DigitalPin.P14);
-        if (side == 113 && state == 2 && left_tracking == 1) {
+        if (side == 0 && state == 1 && left_tracking == 1) {
             return true;
         }
-        else if (side == 113 && state == 3 && left_tracking == 0) {
+        else if (side == 0 && state == 0 && left_tracking == 0) {
             return true;
         }
-        else if (side == 114 && state == 2 && right_tracking == 1) {
+        else if (side == 1 && state == 1 && right_tracking == 1) {
             return true;
         }
-        else if (side == 114 && state == 3 && right_tracking == 0) {
+        else if (side == 1 && state == 0 && right_tracking == 0) {
             return true;
         }
         else {
@@ -424,9 +423,9 @@ namespace cuteBot {
         initEvents();
         control.onEvent(<number>sensor, <number>event, handler);
     }
-    /**
-    * Cars can extend the ultrasonic function to prevent collisions and other functions.. 
-    * @param Sonarunit two states of ultrasonic module
+	/**
+	* Cars can extend the ultrasonic function to prevent collisions and other functions.. 
+	* @param Sonarunit two states of ultrasonic module, eg: Centimeters
     */
     //% blockId=ultrasonic block="HC-SR04 Sonar unit %unit"
     //% weight=35
@@ -442,17 +441,17 @@ namespace cuteBot {
         const d = pins.pulseIn(DigitalPin.P12, PulseValue.High, maxCmDistance * 50);
         switch (unit) {
             case SonarUnit.Centimeters:
-                return Math.floor(d * 34 / 2 / 1000);
+                return Math.floor(d * 9 / 6 / 58);
             case SonarUnit.Inches:
-                return Math.floor(d * 34 / 2 / 1000 * 0.3937);
+                return Math.floor(d * 9 / 6 / 148);
             default:
                 return d;
         }
     }
     /**
      * TODO: Set the angle of servo. 
-     * @param Servo ServoList 
-     * @param angle angle of servo
+     * @param Servo ServoList , eg: cuteBot.ServoList.S1
+     * @param angle angle of servo, eg: 90
      */
     //% blockId=cutebot_servo block="Set servo %servo angle to %angle °"
     //% angle.shadow="protractorPicker"
@@ -473,34 +472,22 @@ namespace cuteBot {
             buf[3] = 0;			//补位
             pins.i2cWriteBuffer(STM8_ADDRESSS, buf);
         }
-
     }
     //% shim=IRV2::irCode
     function irCode(): number {
         return 0;
     }
     //% weight=25
-    //% block="On IR receiving"
-    export function IR_callback(handler: () => void) {
+    //% block="On IR button %button Pressed"
+    export function IR_callbackUser(button: IRButtons, handler: () => void) {
         pins.setPull(DigitalPin.P16, PinPullMode.PullUp)
-        control.onEvent(98, 3500, handler)
+        control.onEvent(98, button, handler)
         control.inBackground(() => {
             while (true) {
-                IR_Val = irCode()
-                if (IR_Val != 0xff00) {
-                    control.raiseEvent(98, 3500, EventCreationMode.CreateAndFire)
-                }
+                control.raiseEvent(98, irCode()&0x00ff, EventCreationMode.CreateAndFire)
                 basic.pause(20)
             }
         })
-    }
-    /**
-     * TODO: Get IR value
-     */
-    //% block="IR Button %Button is pressed"
-    //% weight=15
-    export function IR_Button(Button: IRButtons): boolean {
-        return (IR_Val & 0x00ff) == Button
     }
     function initEvents(): void {
         if (_initEvents) {

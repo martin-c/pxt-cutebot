@@ -5,7 +5,7 @@
 
 This library is designed to drive Cutebot, You can get Cutebot here.
 
-https://shop.elecfreaks.com/products/elecfreaks-micro-bit-smart-cutebot-kit-without-micro-bit-board?_pos=1&_sid=aa0fcece2&_ss=r
+https://www.elecfreaks.com/store/cute-bot.html
 ## Code Example
 ```JavaScript
 
